@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection">
+<meta content="email=no" name="format-detection">
+<meta name="viewport" content="width=640, user-scalable=no, target-densitydpi=device-dpi">
+<meta name="keywords" content="神准测试：和胡歌一起旺桃花">
+<title>神准测试：和胡歌一起旺桃花</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<script type="text/javascript" src="http://images.vxinyou.com/jsCommon/jquery-1.7.2.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+    <div class="page1">
+        <div class="pA1">神准测试与胡歌一起旺桃花运错过又要单身啦！</div>
+        <div class="pA_txt">
+            <p>又到情人节，还在羡慕别人成双入对？</p>
+            <p>不如来测测桃花运，只要找对方向，</p>
+            <p>哪有泡不到的妹？</p>
+        </div>
+        <div class="pA2"></div>
+        <a id="start" class="btn" href="javascript:void(0);">开始测试</a>
+    </div>
+    <div class="page2" >        
+        <p style="margin-top:160px;" class="pt">你的姓氏笔画有多少？</p>
+        <div class="sele_box">      
+            <select id="Strokes" class="sele">
+                <option>选择你姓氏的笔画数</option>
+                
+            </select>
+        </div>
+        <p class="pt">你的生日是？</p>
+        <div class="sele_box"> 
+            <select id="Month" class="sele s2">
+                <option>选择月份</option>
+            </select>
+
+            <select id="getDay" style="margin-left:20px;" class="sele s2">
+<option>选择日</option><option>01</option><option>02</option><option>03</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option><option>15</option><option>16</option><option>17</option><option>18</option><option>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option>25</option><option>26</option><option>27</option><option>28</option><option>29</option><option>30</option><option>31</option>
+            </select>
+        </div>
+        <a id="next" class="btn" href="javascript:void(0);">下一步</a>
+        <div class="pB1"></div>
+    </div>
+
+    <div class="page3">
+        <div class="p3_txt">
+            <p class="f6 y">按住星盘</p>
+            <p class="f4">努力<span class="y">想着</span>你梦中情人的<span class="y">样子</span></p>
+            <p class="f4">桃花运的指示<b class="y">即将为你揭晓</b></p>
+        </div>
+        <div class="press">
+            <div class="zwArr1" id="zwArr1"></div>
+            <div id="zwArr2"></div>
+            <div id="pressBtn">按住</div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+var question = new Array();
+$(function(){
+    var question_url = "http://event.vxinyou.com/activity/test/get_question";
+    var submit_url = "http://event.vxinyou.com/activity/test/do_submit";
+    var pet_id = 2; // 活动ID
+    var test_id = 2; // 题目ID
+    var wH = $(window).height();
+    var timer=null;
+    $(".wrap").css("height",wH)
+    $(".page1").addClass("show");
+
+    $("#start").on("click",function(){ //touchstart
+        $(".page1").removeClass("show").delay(1000).hide(0);
+        //setTimeout(function(){$(".page1").hide()},2000);      
+        $(".page2").show().addClass("show");     
+    }); 
+
+    
+
+    $("#next").on("click",function(){
+
+        if($("#Strokes").find("option:selected").text() == '选择你姓氏的笔画数'){
+            alert("请选择你的姓氏的笔画数");
+            return false;
+        }
+        if($("#Month").find("option:selected").text() == '选择月份'){
+            alert("请选择月份");
+            return false;
+        }
+        if($("#getDay").find("option:selected").text() == '选择日'){
+            alert("请选择日");
+            return false;
+        }    
+
+        $(".page2").removeClass("show").hide(); 
+        $(".page3").show().addClass("show");   
+    })
+    
+
+    $.post(
+        question_url,
+        { 
+            "test_id"  : test_id,
+            "sex"  : 0           
+        },   
+        function(response) {
+            console.log(response.question);
+            $.each(response.question, function(i,n){
+                //console.log(n);
+                var obj = new Object();
+                obj.question_id = n.question_id;
+                question[i] = obj;
+            });
+            //console.log(question);
+            $.each(response.question, function(i,obj){
+                $.each(obj.question_options, function(j,n){
+                   //console.log(j);
+                    if (i==0){
+                        $('#Strokes').append('<option value=' + obj.question_options[j].mark +'>' + obj.question_options[j].test + '</option>'); 
+                    }else{
+                        $('#Month').append('<option value='+ obj.question_options[j].mark +'>' + obj.question_options[j].test + '</option>');
+                    }
+                });
+            });
+
+        },
+        "jsonp"
+    );
+
+
+
+    
+    var isChg = false;        
+    $('#pressBtn').get(0).addEventListener('touchstart',function(e){
+        e.preventDefault();
+        isChg = false;
+        $('.press').addClass('dis');
+        uto = setTimeout(function(){
+            isChg = true;
+            pressShow();
+        }, 2000);
+    },false);
+    $('#pressBtn').get(0).addEventListener('touchend',function(e){
+        e.preventDefault();
+        if(uto) {
+            clearTimeout(uto);
+        }
+        if(!isChg) {
+            $('.press').removeClass('dis');
+        }
+    },false);
+
+
+    function pressShow(){
+        question[0].select = $('#Strokes').val();
+        question[1].select = $('#Month').val();
+        console.log(question);
+
+        $.post(
+            submit_url,
+            { 
+                "test_id"  : test_id,
+                "sex"      : 0,   
+                "answer"   : question,
+            },   
+            function(response) {
+                if (response.success){
+                    var log_id = response.result.log_id;
+                    location.href = 'result.php?log_id=' + log_id;
+                }
+                console.log(response);
+            },
+            "jsonp"
+        ); 
+    }
+
+ 
+
+})
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?8b496f21669266204353c5a1ec4babf0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</body>
+</html>
